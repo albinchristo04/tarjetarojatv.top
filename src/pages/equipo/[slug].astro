@@ -1,0 +1,55 @@
+---
+import CollectionPage from '../../components/CollectionPage.astro';
+import { buildTeamSeoParagraphs } from '../../lib/copy';
+import { buildHubFaq } from '../../lib/faq';
+import { getSiteData } from '../../lib/data';
+import {
+  buildBreadcrumbSchema,
+  buildCanonical,
+  buildFaqSchema,
+  buildItemListSchema,
+  buildOrganizationSchema,
+  buildPageTitle,
+} from '../../lib/seo';
+
+export function getStaticPaths() {
+  return getSiteData().teams.map((team) => ({
+    params: { slug: team.slug },
+    props: { team },
+  }));
+}
+
+const { team } = Astro.props;
+const faqItems = buildHubFaq(team.name, team.matches);
+const canonicalUrl = buildCanonical(`/equipo/${team.slug}`);
+const title = buildPageTitle(`${team.name} en Vivo`);
+const description = `Ver ${team.name} en vivo y sus proximos partidos en Tarjeta Roja TV. ${team.matches.length} encuentros relacionados.`;
+const structuredData = [
+  buildOrganizationSchema(),
+  buildBreadcrumbSchema([
+    { name: 'Inicio', url: buildCanonical('/') },
+    { name: team.name, url: canonicalUrl },
+  ]),
+  buildItemListSchema(`Partidos de ${team.name}`, team.matches),
+  buildFaqSchema(faqItems),
+];
+---
+
+<CollectionPage
+  title={title}
+  description={description}
+  canonicalUrl={canonicalUrl}
+  structuredData={structuredData}
+  eyebrow="Equipo"
+  heading={`${team.name} en vivo`}
+  intro={`Perfil de equipo para agrupar partidos, capturar busquedas especificas y enlazar rapido al partido correcto.`}
+  statLine={`${team.matches.length} partidos relacionados`}
+  breadcrumbs={[
+    { name: 'Inicio', href: '/' },
+    { name: team.name },
+  ]}
+  matches={team.matches}
+  faqItems={faqItems}
+  seoTitle={`Ver ${team.name} en vivo`}
+  seoParagraphs={buildTeamSeoParagraphs(team.name, team.matches)}
+/>

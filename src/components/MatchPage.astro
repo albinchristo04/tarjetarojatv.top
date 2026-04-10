@@ -1,0 +1,47 @@
+---
+import type { NormalizedMatch } from '../lib/types';
+import Breadcrumb from './Breadcrumb.astro';
+import FaqBlock from './FaqBlock.astro';
+import Player from './Player.astro';
+import RelatedMatches from './RelatedMatches.astro';
+import SeoText from './SeoText.astro';
+
+interface Props {
+  match: NormalizedMatch;
+  relatedMatches: NormalizedMatch[];
+  seoParagraphs: string[];
+}
+
+const { match, relatedMatches, seoParagraphs } = Astro.props;
+---
+
+<section class="hero hero--subpage">
+  <div class="hero__inner">
+    <Breadcrumb
+      items={[
+        { name: 'Inicio', href: '/' },
+        { name: match.sportLabel, href: `/${match.sportSlug}/` },
+        { name: match.leagueDisplayName, href: `/${match.leagueSlug}/` },
+        { name: `${match.homeTeam} vs ${match.awayTeam}` },
+      ]}
+    />
+
+    <p class="hero__eyebrow">{match.leagueDisplayName}</p>
+    <h1>
+      {match.homeTeam} vs {match.awayTeam}
+    </h1>
+    <p class="hero__lead">
+      Partido en vivo por {match.leagueDisplayName}. Horario base: {match.time} Madrid.
+    </p>
+    <p class="hero__stats">{match.eventDateLabel}</p>
+  </div>
+</section>
+
+<section class="content-section">
+  <Player match={match} />
+</section>
+
+<FaqBlock items={match.faq} />
+<SeoText title={`Ver ${match.homeTeam} vs ${match.awayTeam} en vivo`} paragraphs={seoParagraphs} />
+<RelatedMatches matches={relatedMatches} />
+

@@ -1,0 +1,26 @@
+---
+import type { NormalizedMatch } from '../lib/types';
+import MatchCard from './MatchCard.astro';
+
+interface Props {
+  matches: NormalizedMatch[];
+}
+
+const { matches } = Astro.props;
+---
+
+{matches.length > 0 && (
+  <section class="content-section">
+    <div class="section-heading">
+      <p class="section-heading__eyebrow">Mas partidos</p>
+      <h2>Continua con la agenda del dia</h2>
+    </div>
+
+    <div class="match-grid match-grid--compact">
+      {matches.map((match) => (
+        <MatchCard match={match} compact />
+      ))}
+    </div>
+  </section>
+)}
+

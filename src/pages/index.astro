@@ -1,0 +1,102 @@
+---
+import Base from '../layouts/Base.astro';
+import FaqBlock from '../components/FaqBlock.astro';
+import MatchList from '../components/MatchList.astro';
+import SeoText from '../components/SeoText.astro';
+import { buildHomeSeoParagraphs } from '../lib/copy';
+import { buildHubFaq } from '../lib/faq';
+import { getSiteData } from '../lib/data';
+import {
+  buildCanonical,
+  buildFaqSchema,
+  buildHomeMetaDescription,
+  buildItemListSchema,
+  buildOrganizationSchema,
+  buildPageTitle,
+  buildWebsiteSchema,
+} from '../lib/seo';
+
+const siteData = getSiteData();
+const title = buildPageTitle('Tarjeta Roja TV en Vivo Hoy');
+const description = buildHomeMetaDescription(siteData.matchCount);
+const canonicalUrl = buildCanonical('/');
+const faqItems = buildHubFaq('Tarjeta Roja TV', siteData.matches);
+const structuredData = [
+  buildWebsiteSchema(),
+  buildOrganizationSchema(),
+  buildItemListSchema('Partidos en vivo hoy', siteData.matches.slice(0, 20)),
+  buildFaqSchema(faqItems),
+];
+const seoParagraphs = buildHomeSeoParagraphs(siteData.matches);
+const featuredMatches = siteData.matches.slice(0, 5);
+const sportLinks = [
+  { href: '/futbol/', label: 'Futbol', value: siteData.sports.futbol.matches.length },
+  { href: '/beisbol/', label: 'Beisbol', value: siteData.sports.beisbol.matches.length },
+  { href: '/mlb/', label: 'MLB', value: siteData.sports.mlb.matches.length },
+  { href: '/nba/', label: 'NBA', value: siteData.sports.nba.matches.length },
+  { href: '/nhl/', label: 'NHL', value: siteData.sports.nhl.matches.length },
+];
+const updatedLabel = new Date(siteData.lastUpdated).toLocaleString('es-ES', {
+  dateStyle: 'medium',
+  timeStyle: 'short',
+  timeZone: 'UTC',
+});
+---
+
+<Base title={title} description={description} canonicalUrl={canonicalUrl} structuredData={structuredData}>
+  <section class="hero">
+    <div class="hero__inner">
+      <div class="hero__grid">
+        <div>
+          <p class="hero__eyebrow">Tarjeta Roja TV</p>
+          <h1>Partidos en vivo hoy con una portada hecha para entrar rapido</h1>
+          <p class="hero__lead">
+            Tarjeta Roja TV ordena la agenda del dia alrededor de lo que la gente busca de verdad:
+            futbol, MLB, NBA, NHL, Roja Directa y Pirlo TV, todo resuelto con horarios, canales y
+            acceso inmediato al partido.
+          </p>
+          <p class="hero__stats">
+            {siteData.matchCount} partidos · actualizado {updatedLabel} UTC · fuente {siteData.source}
+          </p>
+        </div>
+
+        <aside class="hero-board">
+          <div class="hero-board__header">
+            <div>
+              <p class="section-heading__eyebrow">Radar del dia</p>
+              <h2>Entradas rapidas</h2>
+            </div>
+          </div>
+
+          <ul class="hero-board__list">
+            {featuredMatches.map((match) => (
+              <li>
+                <span>
+                  <strong>{match.homeTeam}</strong> vs <strong>{match.awayTeam}</strong>
+                </span>
+                <span>{match.time}</span>
+              </li>
+            ))}
+          </ul>
+
+          <ul class="hero-links">
+            {sportLinks.map((link) => (
+              <li>
+                <a href={link.href}>{link.label}</a>
+                <span>{link.value} partidos</span>
+              </li>
+            ))}
+          </ul>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <MatchList groups={siteData.leagues} />
+  </section>
+
+  <FaqBlock items={faqItems} />
+  <SeoText title="Tarjeta Roja TV y partidos en vivo hoy" paragraphs={seoParagraphs} />
+</Base>
+

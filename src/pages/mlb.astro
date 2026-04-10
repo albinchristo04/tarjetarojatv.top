@@ -1,0 +1,50 @@
+---
+import CollectionPage from '../components/CollectionPage.astro';
+import { buildHubSeoParagraphs } from '../lib/copy';
+import { buildHubFaq } from '../lib/faq';
+import { getSiteData } from '../lib/data';
+import {
+  buildBreadcrumbSchema,
+  buildCanonical,
+  buildFaqSchema,
+  buildItemListSchema,
+  buildOrganizationSchema,
+  buildPageTitle,
+} from '../lib/seo';
+
+const siteData = getSiteData();
+const hub = siteData.sports.mlb;
+const faqItems = buildHubFaq('MLB', hub.matches);
+const canonicalUrl = buildCanonical('/mlb');
+const title = buildPageTitle('MLB en Vivo Hoy');
+const description = `Ver MLB en vivo hoy. ${hub.matches.length} juegos en Tarjeta Roja TV con horarios, canales y paginas de equipo disponibles.`;
+const structuredData = [
+  buildOrganizationSchema(),
+  buildBreadcrumbSchema([
+    { name: 'Inicio', url: buildCanonical('/') },
+    { name: 'MLB', url: canonicalUrl },
+  ]),
+  buildItemListSchema('Partidos MLB en vivo', hub.matches),
+  buildFaqSchema(faqItems),
+];
+---
+
+<CollectionPage
+  title={title}
+  description={description}
+  canonicalUrl={canonicalUrl}
+  structuredData={structuredData}
+  eyebrow="MLB"
+  heading="MLB en vivo hoy"
+  intro="Portada especifica para la Major League Baseball, separada del hub general de beisbol para cubrir una intencion de busqueda mas directa."
+  statLine={`${hub.matches.length} juegos MLB · ${hub.leagueGroups.length} liga activa`}
+  breadcrumbs={[
+    { name: 'Inicio', href: '/' },
+    { name: 'MLB' },
+  ]}
+  groups={hub.leagueGroups}
+  faqItems={faqItems}
+  seoTitle="Ver MLB en vivo en Tarjeta Roja TV"
+  seoParagraphs={buildHubSeoParagraphs('MLB', hub.matches)}
+/>
+

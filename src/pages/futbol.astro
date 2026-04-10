@@ -1,0 +1,50 @@
+---
+import CollectionPage from '../components/CollectionPage.astro';
+import { buildHubSeoParagraphs } from '../lib/copy';
+import { buildHubFaq } from '../lib/faq';
+import { getSiteData } from '../lib/data';
+import {
+  buildBreadcrumbSchema,
+  buildCanonical,
+  buildFaqSchema,
+  buildItemListSchema,
+  buildOrganizationSchema,
+  buildPageTitle,
+} from '../lib/seo';
+
+const siteData = getSiteData();
+const hub = siteData.sports.futbol;
+const faqItems = buildHubFaq('Futbol', hub.matches);
+const canonicalUrl = buildCanonical('/futbol');
+const title = buildPageTitle('Futbol en Vivo Hoy');
+const description = `Ver futbol en vivo hoy. ${hub.matches.length} partidos disponibles en Tarjeta Roja TV con horarios, canales y servidores.`;
+const structuredData = [
+  buildOrganizationSchema(),
+  buildBreadcrumbSchema([
+    { name: 'Inicio', url: buildCanonical('/') },
+    { name: 'Futbol', url: canonicalUrl },
+  ]),
+  buildItemListSchema('Partidos de futbol en vivo', hub.matches),
+  buildFaqSchema(faqItems),
+];
+---
+
+<CollectionPage
+  title={title}
+  description={description}
+  canonicalUrl={canonicalUrl}
+  structuredData={structuredData}
+  eyebrow="Futbol"
+  heading="Futbol en vivo hoy"
+  intro="Partidos de futbol organizados por liga, con horarios, canales y acceso rapido a cada encuentro."
+  statLine={`${hub.matches.length} partidos · ${hub.leagueGroups.length} ligas activas`}
+  breadcrumbs={[
+    { name: 'Inicio', href: '/' },
+    { name: 'Futbol' },
+  ]}
+  groups={hub.leagueGroups}
+  faqItems={faqItems}
+  seoTitle="Ver futbol en vivo en Tarjeta Roja TV"
+  seoParagraphs={buildHubSeoParagraphs('Futbol', hub.matches)}
+/>
+

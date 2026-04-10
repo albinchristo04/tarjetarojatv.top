@@ -1,0 +1,50 @@
+---
+import CollectionPage from '../components/CollectionPage.astro';
+import { buildHubSeoParagraphs } from '../lib/copy';
+import { buildHubFaq } from '../lib/faq';
+import { getSiteData } from '../lib/data';
+import {
+  buildBreadcrumbSchema,
+  buildCanonical,
+  buildFaqSchema,
+  buildItemListSchema,
+  buildOrganizationSchema,
+  buildPageTitle,
+} from '../lib/seo';
+
+const siteData = getSiteData();
+const hub = siteData.sports.nba;
+const faqItems = buildHubFaq('NBA', hub.matches);
+const canonicalUrl = buildCanonical('/nba');
+const title = buildPageTitle('NBA en Vivo Hoy');
+const description = `Ver NBA en vivo hoy. ${hub.matches.length} partidos disponibles en Tarjeta Roja TV con canales y servidores actualizados.`;
+const structuredData = [
+  buildOrganizationSchema(),
+  buildBreadcrumbSchema([
+    { name: 'Inicio', url: buildCanonical('/') },
+    { name: 'NBA', url: canonicalUrl },
+  ]),
+  buildItemListSchema('Partidos NBA en vivo', hub.matches),
+  buildFaqSchema(faqItems),
+];
+---
+
+<CollectionPage
+  title={title}
+  description={description}
+  canonicalUrl={canonicalUrl}
+  structuredData={structuredData}
+  eyebrow="NBA"
+  heading="NBA en vivo hoy"
+  intro="Partidos NBA con horarios claros, idiomas disponibles y acceso directo a cada canal y servidor."
+  statLine={`${hub.matches.length} partidos NBA`}
+  breadcrumbs={[
+    { name: 'Inicio', href: '/' },
+    { name: 'NBA' },
+  ]}
+  groups={hub.leagueGroups}
+  faqItems={faqItems}
+  seoTitle="Ver NBA en vivo en Tarjeta Roja TV"
+  seoParagraphs={buildHubSeoParagraphs('NBA', hub.matches)}
+/>
+

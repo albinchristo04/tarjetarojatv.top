@@ -1,0 +1,50 @@
+---
+import CollectionPage from '../components/CollectionPage.astro';
+import { buildHubSeoParagraphs } from '../lib/copy';
+import { buildHubFaq } from '../lib/faq';
+import { getSiteData } from '../lib/data';
+import {
+  buildBreadcrumbSchema,
+  buildCanonical,
+  buildFaqSchema,
+  buildItemListSchema,
+  buildOrganizationSchema,
+  buildPageTitle,
+} from '../lib/seo';
+
+const siteData = getSiteData();
+const hub = siteData.sports.nhl;
+const faqItems = buildHubFaq('NHL', hub.matches);
+const canonicalUrl = buildCanonical('/nhl');
+const title = buildPageTitle('NHL en Vivo Hoy');
+const description = `Ver NHL en vivo hoy. ${hub.matches.length} partidos disponibles en Tarjeta Roja TV con horarios y enlaces listos para abrir.`;
+const structuredData = [
+  buildOrganizationSchema(),
+  buildBreadcrumbSchema([
+    { name: 'Inicio', url: buildCanonical('/') },
+    { name: 'NHL', url: canonicalUrl },
+  ]),
+  buildItemListSchema('Partidos NHL en vivo', hub.matches),
+  buildFaqSchema(faqItems),
+];
+---
+
+<CollectionPage
+  title={title}
+  description={description}
+  canonicalUrl={canonicalUrl}
+  structuredData={structuredData}
+  eyebrow="NHL"
+  heading="NHL en vivo hoy"
+  intro="Cobertura de hockey sobre hielo dentro del mismo sistema de Tarjeta Roja TV, con enfoque en rapidez y claridad."
+  statLine={`${hub.matches.length} partidos NHL`}
+  breadcrumbs={[
+    { name: 'Inicio', href: '/' },
+    { name: 'NHL' },
+  ]}
+  groups={hub.leagueGroups}
+  faqItems={faqItems}
+  seoTitle="Ver NHL en vivo en Tarjeta Roja TV"
+  seoParagraphs={buildHubSeoParagraphs('NHL', hub.matches)}
+/>
+

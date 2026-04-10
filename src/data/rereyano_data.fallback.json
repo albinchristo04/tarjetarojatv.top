@@ -1,0 +1,265 @@
+{
+  "extractor": "RereYano",
+  "website": "https://cartelive.club/vip3.php",
+  "last_updated": "2026-04-08T21:59:33.612970",
+  "total_events": 26,
+  "total_players": 4,
+  "m3u8_extracted": 0,
+  "accessible_streams": 0,
+  "events": [
+    {
+      "date": "08-04-2026",
+      "time": "21:00",
+      "datetime": "08-04-2026 21:00",
+      "league": "Ligue Des Champions",
+      "teams": "Barcelona - Atl. Madrid",
+      "channels": [
+        { "id": "12", "lang": "fr" },
+        { "id": "161", "lang": "es" },
+        { "id": "130", "lang": "gb" },
+        { "id": "138", "lang": "it" },
+        { "id": "112", "lang": "de" },
+        { "id": "68", "lang": "es" },
+        { "id": "78", "lang": "es" },
+        { "id": "87", "lang": "es" }
+      ]
+    },
+    {
+      "date": "08-04-2026",
+      "time": "21:00",
+      "datetime": "08-04-2026 21:00",
+      "league": "Ligue Des Champions",
+      "teams": "PSG - Liverpool",
+      "channels": [
+        { "id": "11", "lang": "fr" },
+        { "id": "162", "lang": "es" },
+        { "id": "126", "lang": "gb" },
+        { "id": "140", "lang": "it" },
+        { "id": "111", "lang": "de" },
+        { "id": "88", "lang": "es" }
+      ]
+    },
+    {
+      "date": "08-04-2026",
+      "time": "21:07",
+      "datetime": "08-04-2026 21:07",
+      "league": "MLB",
+      "teams": "Toronto Blue Jays - Los Angeles Dodgers",
+      "channels": [{ "id": "175", "lang": "us" }]
+    },
+    {
+      "date": "08-04-2026",
+      "time": "21:10",
+      "datetime": "08-04-2026 21:10",
+      "league": "MLB",
+      "teams": "Colorado Rockies - Houston Astros",
+      "channels": [{ "id": "176", "lang": "us" }]
+    },
+    {
+      "date": "08-04-2026",
+      "time": "21:45",
+      "datetime": "08-04-2026 21:45",
+      "league": "MLB",
+      "teams": "San Francisco Giants - Philadelphia Phillies",
+      "channels": [{ "id": "177", "lang": "us" }]
+    },
+    {
+      "date": "08-04-2026",
+      "time": "22:05",
+      "datetime": "08-04-2026 22:05",
+      "league": "MLB",
+      "teams": "Washington Nationals - St.Louis Cardinals",
+      "channels": [{ "id": "178", "lang": "us" }]
+    },
+    {
+      "date": "08-04-2026",
+      "time": "22:07",
+      "datetime": "08-04-2026 22:07",
+      "league": "MLB",
+      "teams": "Los Angeles Angels - Atlanta Braves",
+      "channels": [{ "id": "179", "lang": "us" }]
+    },
+    {
+      "date": "08-04-2026",
+      "time": "22:10",
+      "datetime": "08-04-2026 22:10",
+      "league": "MLB",
+      "teams": "New York Mets - Arizona Diamondbacks",
+      "channels": [{ "id": "180", "lang": "us" }]
+    },
+    {
+      "date": "09-04-2026",
+      "time": "00:40",
+      "datetime": "09-04-2026 00:40",
+      "league": "MLB",
+      "teams": "Miami Marlins - Cincinnati Reds",
+      "channels": [{ "id": "181", "lang": "us" }]
+    },
+    {
+      "date": "09-04-2026",
+      "time": "00:40",
+      "datetime": "09-04-2026 00:40",
+      "league": "MLB",
+      "teams": "Tampa Bay Rays - Chicago Cubs",
+      "channels": [{ "id": "182", "lang": "us" }]
+    },
+    {
+      "date": "09-04-2026",
+      "time": "01:00",
+      "datetime": "09-04-2026 01:00",
+      "league": "NBA",
+      "teams": "Cleveland Cavaliers - Atlanta Hawks",
+      "channels": [
+        { "id": "1", "lang": "fr" },
+        { "id": "183", "lang": "us" }
+      ]
+    },
+    {
+      "date": "09-04-2026",
+      "time": "01:00",
+      "datetime": "09-04-2026 01:00",
+      "league": "NBA",
+      "teams": "Detroit Pistons - Milwaukee Bucks",
+      "channels": [{ "id": "184", "lang": "us" }]
+    },
+    {
+      "date": "09-04-2026",
+      "time": "01:00",
+      "datetime": "09-04-2026 01:00",
+      "league": "NBA",
+      "teams": "Orlando Magic - Minnesota Timberwolves",
+      "channels": [{ "id": "185", "lang": "us" }]
+    },
+    {
+      "date": "09-04-2026",
+      "time": "01:00",
+      "datetime": "09-04-2026 01:00",
+      "league": "NHL",
+      "teams": "New York Rangers - Buffalo Sabres",
+      "channels": [{ "id": "186", "lang": "us" }]
+    },
+    {
+      "date": "09-04-2026",
+      "time": "01:05",
+      "datetime": "09-04-2026 01:05",
+      "league": "MLB",
+      "teams": "New York Yankees - Athletics",
+      "channels": [
+        { "id": "4", "lang": "fr" },
+        { "id": "187", "lang": "us" }
+      ]
+    },
+    {
+      "date": "09-04-2026",
+      "time": "01:30",
+      "datetime": "09-04-2026 01:30",
+      "league": "NHL",
+      "teams": "Toronto Maple Leafs - Washington Capitals",
+      "channels": [{ "id": "188", "lang": "us" }]
+    },
+    {
+      "date": "09-04-2026",
+      "time": "01:40",
+      "datetime": "09-04-2026 01:40",
+      "league": "MLB",
+      "teams": "Minnesota Twins - Detroit Tigers",
+      "channels": [{ "id": "189", "lang": "us" }]
+    },
+    {
+      "date": "09-04-2026",
+      "time": "02:00",
+      "datetime": "09-04-2026 02:00",
+      "league": "Ecuador Ligapro",
+      "teams": "U. Catolica - Emelec",
+      "channels": [{ "id": "86", "lang": "es" }]
+    },
+    {
+      "date": "09-04-2026",
+      "time": "02:10",
+      "datetime": "09-04-2026 02:10",
+      "league": "Copa Argentina",
+      "teams": "Sarmiento Junin - Tristan Suarez",
+      "channels": [{ "id": "77", "lang": "es" }]
+    },
+    {
+      "date": "09-04-2026",
+      "time": "03:00",
+      "datetime": "09-04-2026 03:00",
+      "league": "Concacaf Champions Cup",
+      "teams": "Tigres UANL - Seattle Sounders",
+      "channels": [{ "id": "68", "lang": "es" }]
+    },
+    {
+      "date": "09-04-2026",
+      "time": "03:00",
+      "datetime": "09-04-2026 03:00",
+      "league": "NBA",
+      "teams": "Denver Nuggets - Memphis Grizzlies",
+      "channels": [{ "id": "190", "lang": "us" }]
+    },
+    {
+      "date": "09-04-2026",
+      "time": "03:30",
+      "datetime": "09-04-2026 03:30",
+      "league": "NBA",
+      "teams": "San Antonio Spurs - Portland Trail Blazers",
+      "channels": [
+        { "id": "191", "lang": "us" },
+        { "id": "90", "lang": "es" }
+      ]
+    },
+    {
+      "date": "09-04-2026",
+      "time": "04:00",
+      "datetime": "09-04-2026 04:00",
+      "league": "NBA",
+      "teams": "Los Angeles Clippers - Oklahoma City Thunder",
+      "channels": [{ "id": "192", "lang": "us" }]
+    },
+    {
+      "date": "09-04-2026",
+      "time": "04:00",
+      "datetime": "09-04-2026 04:00",
+      "league": "NBA",
+      "teams": "Phoenix Suns - Dallas Mavericks",
+      "channels": [{ "id": "193", "lang": "us" }]
+    },
+    {
+      "date": "09-04-2026",
+      "time": "04:00",
+      "datetime": "09-04-2026 04:00",
+      "league": "NHL",
+      "teams": "San Jose Sharks - Edmonton Oilers",
+      "channels": [{ "id": "194", "lang": "us" }]
+    },
+    {
+      "date": "09-04-2026",
+      "time": "05:00",
+      "datetime": "09-04-2026 05:00",
+      "league": "Concacaf Champions Cup",
+      "teams": "Toluca - Los Angeles Galaxy",
+      "channels": [
+        { "id": "68", "lang": "es" },
+        { "id": "144", "lang": "pt" }
+      ]
+    }
+  ],
+  "player_streams": {
+    "Cartel": {
+      "name": "Cartel",
+      "player_url": "https://cartelive.club/vip3.php/player/1/1"
+    },
+    "hoca": {
+      "name": "hoca",
+      "player_url": "https://cartelive.club/vip3.php/player/2/1"
+    },
+    "Caster": {
+      "name": "Caster",
+      "player_url": "https://cartelive.club/vip3.php/player/3/1"
+    },
+    "WIGI": {
+      "name": "WIGI",
+      "player_url": "https://cartelive.club/vip3.php/player/4/1"
+    }
+  }
+}

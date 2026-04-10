@@ -1,0 +1,48 @@
+---
+import CollectionPage from '../components/CollectionPage.astro';
+import { buildBrandSeoParagraphs } from '../lib/copy';
+import { getBrandFaq, getSiteData } from '../lib/data';
+import {
+  buildBreadcrumbSchema,
+  buildCanonical,
+  buildFaqSchema,
+  buildItemListSchema,
+  buildOrganizationSchema,
+  buildPageTitle,
+} from '../lib/seo';
+
+const siteData = getSiteData();
+const faqItems = getBrandFaq('Pirlo TV', siteData.matches);
+const canonicalUrl = buildCanonical('/pirlo-tv');
+const title = buildPageTitle('Pirlo TV en Vivo');
+const description = `Pirlo TV en vivo con partidos del dia dentro de Tarjeta Roja TV. ${siteData.matchCount} encuentros listados.`;
+const structuredData = [
+  buildOrganizationSchema(),
+  buildBreadcrumbSchema([
+    { name: 'Inicio', url: buildCanonical('/') },
+    { name: 'Pirlo TV', url: canonicalUrl },
+  ]),
+  buildItemListSchema('Pirlo TV en vivo', siteData.matches.slice(0, 24)),
+  buildFaqSchema(faqItems),
+];
+---
+
+<CollectionPage
+  title={title}
+  description={description}
+  canonicalUrl={canonicalUrl}
+  structuredData={structuredData}
+  eyebrow="Pirlo TV"
+  heading="Pirlo TV en vivo"
+  intro="Pagina de captura para la demanda de Pirlo TV, construida sobre el mismo inventario de partidos, canales y horarios de Tarjeta Roja TV."
+  statLine={`${siteData.matchCount} partidos disponibles hoy`}
+  breadcrumbs={[
+    { name: 'Inicio', href: '/' },
+    { name: 'Pirlo TV' },
+  ]}
+  groups={siteData.leagues}
+  faqItems={faqItems}
+  seoTitle="Pirlo TV y Tarjeta Roja TV"
+  seoParagraphs={buildBrandSeoParagraphs('Pirlo TV', siteData.matches)}
+/>
+

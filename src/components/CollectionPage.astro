@@ -1,0 +1,62 @@
+---
+import type { FaqEntry, LeagueGroup, NormalizedMatch } from '../lib/types';
+import Base from '../layouts/Base.astro';
+import Breadcrumb from './Breadcrumb.astro';
+import FaqBlock from './FaqBlock.astro';
+import MatchList from './MatchList.astro';
+import SeoText from './SeoText.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  canonicalUrl: string;
+  structuredData?: object | object[];
+  eyebrow: string;
+  heading: string;
+  intro: string;
+  statLine: string;
+  breadcrumbs?: Array<{ name: string; href?: string }>;
+  groups?: LeagueGroup[];
+  matches?: NormalizedMatch[];
+  faqItems: FaqEntry[];
+  seoTitle: string;
+  seoParagraphs: string[];
+}
+
+const {
+  title,
+  description,
+  canonicalUrl,
+  structuredData,
+  eyebrow,
+  heading,
+  intro,
+  statLine,
+  breadcrumbs,
+  groups,
+  matches,
+  faqItems,
+  seoTitle,
+  seoParagraphs,
+} = Astro.props;
+---
+
+<Base title={title} description={description} canonicalUrl={canonicalUrl} structuredData={structuredData}>
+  <section class="hero hero--subpage">
+    <div class="hero__inner">
+      {breadcrumbs && <Breadcrumb items={breadcrumbs} />}
+      <p class="hero__eyebrow">{eyebrow}</p>
+      <h1>{heading}</h1>
+      <p class="hero__lead">{intro}</p>
+      <p class="hero__stats">{statLine}</p>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <MatchList groups={groups} matches={matches} />
+  </section>
+
+  <FaqBlock items={faqItems} />
+  <SeoText title={seoTitle} paragraphs={seoParagraphs} />
+</Base>
+

@@ -1,0 +1,48 @@
+---
+import CollectionPage from '../components/CollectionPage.astro';
+import { buildBrandSeoParagraphs } from '../lib/copy';
+import { getBrandFaq, getSiteData } from '../lib/data';
+import {
+  buildBreadcrumbSchema,
+  buildCanonical,
+  buildFaqSchema,
+  buildItemListSchema,
+  buildOrganizationSchema,
+  buildPageTitle,
+} from '../lib/seo';
+
+const siteData = getSiteData();
+const faqItems = getBrandFaq('Tarjeta Roja TV', siteData.matches);
+const canonicalUrl = buildCanonical('/tarjeta-roja');
+const title = buildPageTitle('Tarjeta Roja TV en Vivo');
+const description = `Tarjeta Roja TV en vivo gratis. ${siteData.matchCount} partidos disponibles hoy con horarios, canales y servidores.`;
+const structuredData = [
+  buildOrganizationSchema(),
+  buildBreadcrumbSchema([
+    { name: 'Inicio', url: buildCanonical('/') },
+    { name: 'Tarjeta Roja TV', url: canonicalUrl },
+  ]),
+  buildItemListSchema('Tarjeta Roja TV en vivo', siteData.matches.slice(0, 24)),
+  buildFaqSchema(faqItems),
+];
+---
+
+<CollectionPage
+  title={title}
+  description={description}
+  canonicalUrl={canonicalUrl}
+  structuredData={structuredData}
+  eyebrow="Tarjeta Roja TV"
+  heading="Tarjeta Roja TV en vivo"
+  intro="La pagina principal de marca para Tarjeta Roja TV, pensada para consultas navegacionales y para entrar al listado del dia sin rodeos."
+  statLine={`${siteData.matchCount} partidos · ${siteData.leagues.length} ligas`}
+  breadcrumbs={[
+    { name: 'Inicio', href: '/' },
+    { name: 'Tarjeta Roja TV' },
+  ]}
+  groups={siteData.leagues}
+  faqItems={faqItems}
+  seoTitle="Tarjeta Roja TV en vivo hoy"
+  seoParagraphs={buildBrandSeoParagraphs('Tarjeta Roja TV', siteData.matches)}
+/>
+

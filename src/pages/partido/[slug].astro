@@ -1,0 +1,58 @@
+---
+import Base from '../../layouts/Base.astro';
+import MatchPage from '../../components/MatchPage.astro';
+import { buildMatchSeoParagraphs } from '../../lib/copy';
+import { getSiteData } from '../../lib/data';
+import {
+  buildBreadcrumbSchema,
+  buildCanonical,
+  buildFaqSchema,
+  buildMatchMetaDescription,
+  buildOrganizationSchema,
+  buildPageTitle,
+  buildSportsEventSchema,
+} from '../../lib/seo';
+
+const siteData = getSiteData();
+
+export function getStaticPaths() {
+  return getSiteData().matches.map((match) => ({
+    params: { slug: match.slug },
+    props: { match },
+  }));
+}
+
+const { match } = Astro.props;
+const relatedMatches = siteData.matches
+  .filter((entry) => entry.slug !== match.slug)
+  .sort((left, right) => {
+    const leftScore = left.leagueSlug === match.leagueSlug ? 0 : left.sportSlug === match.sportSlug ? 1 : 2;
+    const rightScore = right.leagueSlug === match.leagueSlug ? 0 : right.sportSlug === match.sportSlug ? 1 : 2;
+    return leftScore - rightScore;
+  })
+  .slice(0, 6);
+
+const title = buildPageTitle(`${match.homeTeam} vs ${match.awayTeam} en Vivo`);
+const description = buildMatchMetaDescription(match);
+const canonicalUrl = buildCanonical(`/partido/${match.slug}`);
+const structuredData = [
+  buildOrganizationSchema(),
+  buildSportsEventSchema(match),
+  buildFaqSchema(match.faq),
+  buildBreadcrumbSchema([
+    { name: 'Inicio', url: buildCanonical('/') },
+    { name: match.sportLabel, url: buildCanonical(`/${match.sportSlug}`) },
+    { name: match.leagueDisplayName, url: buildCanonical(`/${match.leagueSlug}`) },
+    { name: `${match.homeTeam} vs ${match.awayTeam}`, url: canonicalUrl },
+  ]),
+];
+---
+
+<Base title={title} description={description} canonicalUrl={canonicalUrl} structuredData={structuredData}>
+  <MatchPage
+    match={match}
+    relatedMatches={relatedMatches}
+    seoParagraphs={buildMatchSeoParagraphs(match)}
+  />
+</Base>
+

@@ -1,0 +1,33 @@
+---
+import Base from '../layouts/Base.astro';
+import MatchList from '../components/MatchList.astro';
+import { getSiteData } from '../lib/data';
+import { buildCanonical, buildOrganizationSchema, buildPageTitle } from '../lib/seo';
+
+const siteData = getSiteData();
+const title = buildPageTitle('Este partido ya termino');
+const description = 'La pagina solicitada no esta disponible, pero aun puedes revisar los partidos en vivo de hoy.';
+const canonicalUrl = buildCanonical('/404');
+---
+
+<Base
+  title={title}
+  description={description}
+  canonicalUrl={canonicalUrl}
+  structuredData={buildOrganizationSchema()}
+>
+  <section class="hero hero--subpage">
+    <div class="hero__inner">
+      <p class="hero__eyebrow">404</p>
+      <h1>Este partido ya termino, pero hay mas en vivo ahora</h1>
+      <p class="hero__lead">
+        La URL que abriste ya no esta activa o nunca existio. Usa la agenda actual para volver a
+        entrar por la portada correcta.
+      </p>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <MatchList groups={siteData.leagues.slice(0, 4)} />
+  </section>
+</Base>

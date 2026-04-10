@@ -1,0 +1,71 @@
+name: Build and Deploy
+
+on:
+  schedule:
+    - cron: '0 */3 * * *'
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Restore IndexNow cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .cache/indexnow
+          key: indexnow-${{ github.ref_name }}-${{ github.run_id }}
+          restore-keys: |
+            indexnow-${{ github.ref_name }}-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Fetch live data
+        run: npm run fetch-data
+
+      - name: Type and Astro check
+        run: npm run check
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build static site
+        run: npm run build
+        env:
+          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+
+      - name: Deploy to Cloudflare Pages
+        run: npx wrangler pages deploy dist --project-name tarjetarojatv-top
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Ping sitemap endpoints
+        run: node --import tsx scripts/ping-search-engines.ts
+
+      - name: Submit changed URLs to IndexNow
+        run: node --import tsx scripts/submit-indexnow.ts
+        env:
+          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+          INDEXNOW_CACHE_FILE: .cache/indexnow/last-urls.json
+
+      - name: Save IndexNow cache
+        uses: actions/cache/save@v4
+        with:
+          path: .cache/indexnow
+          key: indexnow-${{ github.ref_name }}-${{ github.run_id }}
+

@@ -1,0 +1,26 @@
+---
+import type { FaqEntry } from '../lib/types';
+
+interface Props {
+  items: FaqEntry[];
+}
+
+const { items } = Astro.props;
+---
+
+<section class="content-section">
+  <div class="section-heading">
+    <p class="section-heading__eyebrow">Preguntas frecuentes</p>
+    <h2>Respuestas rapidas antes de entrar al partido</h2>
+  </div>
+
+  <div class="faq-list">
+    {items.map((item, index) => (
+      <details class="faq-item" open={index === 0}>
+        <summary>{item.question}</summary>
+        <p>{item.answer}</p>
+      </details>
+    ))}
+  </div>
+</section>
+

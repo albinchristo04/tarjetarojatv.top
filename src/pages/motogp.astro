@@ -1,0 +1,49 @@
+---
+import CollectionPage from '../components/CollectionPage.astro';
+import { buildHubSeoParagraphs } from '../lib/copy';
+import { buildHubFaq } from '../lib/faq';
+import { getSiteData } from '../lib/data';
+import {
+  buildBreadcrumbSchema,
+  buildCanonical,
+  buildFaqSchema,
+  buildItemListSchema,
+  buildOrganizationSchema,
+  buildPageTitle,
+} from '../lib/seo';
+
+const siteData = getSiteData();
+const hub = siteData.sports.motogp;
+const faqItems = buildHubFaq('MotoGP', hub.matches);
+const canonicalUrl = buildCanonical('/motogp');
+const title = buildPageTitle('MotoGP en Vivo Hoy');
+const description = `Ver MotoGP en vivo hoy. ${hub.matches.length} eventos disponibles en Tarjeta Roja TV.`;
+const structuredData = [
+  buildOrganizationSchema(),
+  buildBreadcrumbSchema([
+    { name: 'Inicio', url: buildCanonical('/') },
+    { name: 'MotoGP', url: canonicalUrl },
+  ]),
+  buildItemListSchema('Eventos MotoGP en vivo', hub.matches),
+  buildFaqSchema(faqItems),
+];
+---
+
+<CollectionPage
+  title={title}
+  description={description}
+  canonicalUrl={canonicalUrl}
+  structuredData={structuredData}
+  eyebrow="MotoGP"
+  heading="MotoGP en vivo hoy"
+  intro="Cobertura para eventos de motor dentro de la misma plantilla de Tarjeta Roja TV."
+  statLine={`${hub.matches.length} eventos MotoGP`}
+  breadcrumbs={[
+    { name: 'Inicio', href: '/' },
+    { name: 'MotoGP' },
+  ]}
+  groups={hub.leagueGroups}
+  faqItems={faqItems}
+  seoTitle="Ver MotoGP en vivo en Tarjeta Roja TV"
+  seoParagraphs={buildHubSeoParagraphs('MotoGP', hub.matches)}
+/>

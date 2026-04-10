@@ -1,0 +1,47 @@
+---
+import CollectionPage from '../components/CollectionPage.astro';
+import { buildBrandSeoParagraphs } from '../lib/copy';
+import { getBrandFaq, getSiteData } from '../lib/data';
+import {
+  buildBreadcrumbSchema,
+  buildCanonical,
+  buildFaqSchema,
+  buildItemListSchema,
+  buildOrganizationSchema,
+  buildPageTitle,
+} from '../lib/seo';
+
+const siteData = getSiteData();
+const faqItems = getBrandFaq('Tarjeta Roja Pirlo TV', siteData.matches);
+const canonicalUrl = buildCanonical('/tarjeta-roja-pirlo-tv');
+const title = buildPageTitle('Tarjeta Roja Pirlo TV en Vivo');
+const description = `Tarjeta Roja Pirlo TV en vivo. Encuentra ${siteData.matchCount} partidos con horarios, canales y paginas por liga.`;
+const structuredData = [
+  buildOrganizationSchema(),
+  buildBreadcrumbSchema([
+    { name: 'Inicio', url: buildCanonical('/') },
+    { name: 'Tarjeta Roja Pirlo TV', url: canonicalUrl },
+  ]),
+  buildItemListSchema('Tarjeta Roja Pirlo TV', siteData.matches.slice(0, 24)),
+  buildFaqSchema(faqItems),
+];
+---
+
+<CollectionPage
+  title={title}
+  description={description}
+  canonicalUrl={canonicalUrl}
+  structuredData={structuredData}
+  eyebrow="Tarjeta Roja · Pirlo TV"
+  heading="Tarjeta Roja Pirlo TV en vivo"
+  intro="Otra pagina de combinacion de marca para cubrir busquedas largas relacionadas con Tarjeta Roja y Pirlo TV."
+  statLine={`${siteData.matchCount} partidos en la agenda`}
+  breadcrumbs={[
+    { name: 'Inicio', href: '/' },
+    { name: 'Tarjeta Roja Pirlo TV' },
+  ]}
+  groups={siteData.leagues}
+  faqItems={faqItems}
+  seoTitle="Tarjeta Roja Pirlo TV y agenda en vivo"
+  seoParagraphs={buildBrandSeoParagraphs('Tarjeta Roja Pirlo TV', siteData.matches)}
+/>

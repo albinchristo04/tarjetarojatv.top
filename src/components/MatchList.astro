@@ -1,0 +1,51 @@
+---
+import type { LeagueGroup, NormalizedMatch } from '../lib/types';
+import MatchCard from './MatchCard.astro';
+
+interface Props {
+  groups?: LeagueGroup[];
+  matches?: NormalizedMatch[];
+  emptyTitle?: string;
+  emptyMessage?: string;
+}
+
+const { groups, matches, emptyTitle = 'Sin partidos disponibles', emptyMessage = 'El listado se actualiza cada 3 horas.' } = Astro.props;
+const hasGroups = Boolean(groups && groups.length > 0);
+const hasMatches = Boolean(matches && matches.length > 0);
+---
+
+{hasGroups ? (
+  <div class="league-stack">
+    {groups!.map((group) => (
+      <section class="league-section">
+        <div class="league-section__header">
+          <div>
+            <p class="section-heading__eyebrow">Liga</p>
+            <h2>{group.displayName}</h2>
+          </div>
+          <a href={`/${group.slug}/`} class="section-link">
+            Ver liga
+          </a>
+        </div>
+
+        <div class="match-grid">
+          {group.matches.map((match) => (
+            <MatchCard match={match} />
+          ))}
+        </div>
+      </section>
+    ))}
+  </div>
+) : hasMatches ? (
+  <div class="match-grid">
+    {matches!.map((match) => (
+      <MatchCard match={match} />
+    ))}
+  </div>
+) : (
+  <section class="empty-state">
+    <h2>{emptyTitle}</h2>
+    <p>{emptyMessage}</p>
+  </section>
+)}
+

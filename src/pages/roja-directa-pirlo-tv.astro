@@ -1,0 +1,48 @@
+---
+import CollectionPage from '../components/CollectionPage.astro';
+import { buildBrandSeoParagraphs } from '../lib/copy';
+import { getBrandFaq, getSiteData } from '../lib/data';
+import {
+  buildBreadcrumbSchema,
+  buildCanonical,
+  buildFaqSchema,
+  buildItemListSchema,
+  buildOrganizationSchema,
+  buildPageTitle,
+} from '../lib/seo';
+
+const siteData = getSiteData();
+const faqItems = getBrandFaq('Roja Directa Pirlo TV', siteData.matches);
+const canonicalUrl = buildCanonical('/roja-directa-pirlo-tv');
+const title = buildPageTitle('Roja Directa Pirlo TV en Vivo');
+const description = `Roja Directa Pirlo TV en vivo con acceso a ${siteData.matchCount} partidos del dia desde Tarjeta Roja TV.`;
+const structuredData = [
+  buildOrganizationSchema(),
+  buildBreadcrumbSchema([
+    { name: 'Inicio', url: buildCanonical('/') },
+    { name: 'Roja Directa Pirlo TV', url: canonicalUrl },
+  ]),
+  buildItemListSchema('Roja Directa Pirlo TV', siteData.matches.slice(0, 24)),
+  buildFaqSchema(faqItems),
+];
+---
+
+<CollectionPage
+  title={title}
+  description={description}
+  canonicalUrl={canonicalUrl}
+  structuredData={structuredData}
+  eyebrow="Roja Directa · Pirlo TV"
+  heading="Roja Directa Pirlo TV en vivo"
+  intro="Pagina combinada para cubrir la superposicion entre las marcas Roja Directa y Pirlo TV sin perder la identidad principal de Tarjeta Roja TV."
+  statLine={`${siteData.matchCount} partidos del dia`}
+  breadcrumbs={[
+    { name: 'Inicio', href: '/' },
+    { name: 'Roja Directa Pirlo TV' },
+  ]}
+  groups={siteData.leagues}
+  faqItems={faqItems}
+  seoTitle="Roja Directa Pirlo TV y partidos en vivo"
+  seoParagraphs={buildBrandSeoParagraphs('Roja Directa Pirlo TV', siteData.matches)}
+/>
+

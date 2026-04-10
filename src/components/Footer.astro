@@ -1,0 +1,31 @@
+---
+const footerLinks = [
+  { href: '/futbol/', label: 'Futbol' },
+  { href: '/beisbol/', label: 'Beisbol' },
+  { href: '/mlb/', label: 'MLB' },
+  { href: '/nba/', label: 'NBA' },
+  { href: '/nhl/', label: 'NHL' },
+  { href: '/tarjeta-roja/', label: 'Tarjeta Roja' },
+  { href: '/pirlo-tv/', label: 'Pirlo TV' },
+];
+---
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <p class="site-footer__eyebrow">Tarjeta Roja TV</p>
+      <h2>Agenda deportiva, canales y servidores en una sola portada.</h2>
+      <p>
+        Futbol, MLB, NBA y mas deportes en vivo hoy, con foco en busquedas de Tarjeta Roja, Roja
+        Directa y Pirlo TV.
+      </p>
+    </div>
+
+    <nav class="site-footer__nav" aria-label="Footer">
+      {footerLinks.map((link) => (
+        <a href={link.href}>{link.label}</a>
+      ))}
+    </nav>
+  </div>
+</footer>
+

@@ -1,0 +1,30 @@
+---
+import type { NormalizedMatch } from '../lib/types';
+
+interface Props {
+  match: NormalizedMatch;
+  compact?: boolean;
+}
+
+const { match, compact = false } = Astro.props;
+const href = `/partido/${match.slug}/`;
+---
+
+<a href={href} class={`match-card ${compact ? 'match-card--compact' : ''}`}>
+  <div class="match-card__meta">
+    <span>{match.leagueDisplayName}</span>
+    <span>{match.time} Madrid</span>
+  </div>
+
+  <div class="match-card__teams">
+    <strong>{match.homeTeam}</strong>
+    <span>vs</span>
+    <strong>{match.awayTeam}</strong>
+  </div>
+
+  <div class="match-card__footer">
+    <span>{match.channelCount} canales</span>
+    <span>{match.availableLanguages.join(' · ')}</span>
+  </div>
+</a>
+

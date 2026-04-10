@@ -1,0 +1,50 @@
+---
+import CollectionPage from '../components/CollectionPage.astro';
+import { buildHubSeoParagraphs } from '../lib/copy';
+import { buildHubFaq } from '../lib/faq';
+import { getSiteData } from '../lib/data';
+import {
+  buildBreadcrumbSchema,
+  buildCanonical,
+  buildFaqSchema,
+  buildItemListSchema,
+  buildOrganizationSchema,
+  buildPageTitle,
+} from '../lib/seo';
+
+const siteData = getSiteData();
+const hub = siteData.sports.beisbol;
+const faqItems = buildHubFaq('Beisbol', hub.matches);
+const canonicalUrl = buildCanonical('/beisbol');
+const title = buildPageTitle('Beisbol en Vivo Hoy');
+const description = `Ver beisbol en vivo hoy. ${hub.matches.length} juegos disponibles en Tarjeta Roja TV con cobertura MLB y horarios multi-zona.`;
+const structuredData = [
+  buildOrganizationSchema(),
+  buildBreadcrumbSchema([
+    { name: 'Inicio', url: buildCanonical('/') },
+    { name: 'Beisbol', url: canonicalUrl },
+  ]),
+  buildItemListSchema('Partidos de beisbol en vivo', hub.matches),
+  buildFaqSchema(faqItems),
+];
+---
+
+<CollectionPage
+  title={title}
+  description={description}
+  canonicalUrl={canonicalUrl}
+  structuredData={structuredData}
+  eyebrow="Beisbol"
+  heading="Beisbol en vivo hoy"
+  intro="Hub de beisbol en espanol para captar busquedas generales, con foco en MLB y horarios faciles de leer."
+  statLine={`${hub.matches.length} partidos de beisbol · ${hub.leagueGroups.length} ligas`}
+  breadcrumbs={[
+    { name: 'Inicio', href: '/' },
+    { name: 'Beisbol' },
+  ]}
+  groups={hub.leagueGroups}
+  faqItems={faqItems}
+  seoTitle="Ver beisbol en vivo en Tarjeta Roja TV"
+  seoParagraphs={buildHubSeoParagraphs('Beisbol', hub.matches)}
+/>
+

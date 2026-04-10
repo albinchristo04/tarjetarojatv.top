@@ -1,0 +1,30 @@
+---
+const links = [
+  { href: '/', label: 'Inicio' },
+  { href: '/futbol/', label: 'Futbol' },
+  { href: '/mlb/', label: 'MLB' },
+  { href: '/nba/', label: 'NBA' },
+  { href: '/tarjeta-roja/', label: 'Tarjeta Roja' },
+  { href: '/pirlo-tv/', label: 'Pirlo TV' },
+];
+---
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a href="/" class="site-brand">
+      <span class="site-brand__mark">TR</span>
+      <span class="site-brand__text">
+        <strong>Tarjeta Roja TV</strong>
+        <small>Partidos en vivo hoy</small>
+      </span>
+    </a>
+
+    <nav class="site-nav" aria-label="Principal">
+      {links.map((link) => (
+        <a href={link.href} class="site-nav__link">
+          {link.label}
+        </a>
+      ))}
+    </nav>
+  </div>
+</header>

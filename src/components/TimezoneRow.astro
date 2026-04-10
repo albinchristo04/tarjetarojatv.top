@@ -1,0 +1,16 @@
+---
+import type { TimezoneDisplay } from '../lib/types';
+
+interface Props {
+  items: TimezoneDisplay[];
+}
+
+const { items } = Astro.props;
+---
+
+<div class="timezone-row">
+  {items.map((item) => (
+    <span>{item.value} {item.label}</span>
+  ))}
+</div>
+

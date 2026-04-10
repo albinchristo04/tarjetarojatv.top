@@ -1,0 +1,57 @@
+---
+import CollectionPage from '../components/CollectionPage.astro';
+import { buildLeagueSeoParagraphs } from '../lib/copy';
+import { buildHubFaq } from '../lib/faq';
+import { getRenderableLeagueGroups } from '../lib/data';
+import {
+  buildBreadcrumbSchema,
+  buildCanonical,
+  buildFaqSchema,
+  buildItemListSchema,
+  buildLeagueMetaDescription,
+  buildOrganizationSchema,
+  buildPageTitle,
+} from '../lib/seo';
+
+export function getStaticPaths() {
+  return getRenderableLeagueGroups().map((group) => ({
+    params: { slug: group.slug },
+    props: { group },
+  }));
+}
+
+const { group } = Astro.props;
+const faqItems = buildHubFaq(group.displayName, group.matches);
+const canonicalUrl = buildCanonical(`/${group.slug}`);
+const title = buildPageTitle(`${group.displayName} en Vivo`);
+const description = buildLeagueMetaDescription(group);
+const structuredData = [
+  buildOrganizationSchema(),
+  buildBreadcrumbSchema([
+    { name: 'Inicio', url: buildCanonical('/') },
+    { name: group.displayName, url: canonicalUrl },
+  ]),
+  buildItemListSchema(`Partidos de ${group.displayName}`, group.matches),
+  buildFaqSchema(faqItems),
+];
+---
+
+<CollectionPage
+  title={title}
+  description={description}
+  canonicalUrl={canonicalUrl}
+  structuredData={structuredData}
+  eyebrow={group.sportKey.toUpperCase()}
+  heading={`${group.displayName} en vivo`}
+  intro={`Portada de liga para ${group.displayName}, con todos los partidos disponibles, horarios y accesos a cada transmision.`}
+  statLine={`${group.matches.length} partidos en esta liga`}
+  breadcrumbs={[
+    { name: 'Inicio', href: '/' },
+    { name: group.displayName },
+  ]}
+  matches={group.matches}
+  faqItems={faqItems}
+  seoTitle={`Ver ${group.displayName} en vivo`}
+  seoParagraphs={buildLeagueSeoParagraphs(group)}
+/>
+
