@@ -9,7 +9,7 @@
     "preview": "astro preview",
     "fetch-data": "node scripts/fetch-data.mjs",
     "check": "astro check && tsc --noEmit",
-    "test": "node --import tsx --test tests/**/*.test.ts"
+    "test": "node --import tsx --test \"tests/**/*.test.ts\""
   },
   "dependencies": {
     "astro": "^5.7.8"
@@ -21,4 +21,3 @@
     "typescript": "^5.8.3"
   }
 }
-
