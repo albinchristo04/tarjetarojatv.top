@@ -41,6 +41,8 @@ const structuredDataList = Array.isArray(structuredData)
       <script is:inline type="application/ld+json" set:html={JSON.stringify(entry)} />
     ))}
     <slot name="head" />
+    <!-- Monetag: Push Notification -->
+    <script src="https://5gvci.com/act/files/tag.min.js?z=10862365" data-cfasync="false" async is:inline></script>
   </head>
   <body>
     <Nav />
@@ -48,5 +50,7 @@ const structuredDataList = Array.isArray(structuredData)
       <slot />
     </main>
     <Footer />
+    <!-- Monetag: Popunder -->
+    <script is:inline>(function(s){s.dataset.zone='10862353',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
   </body>
 </html>
