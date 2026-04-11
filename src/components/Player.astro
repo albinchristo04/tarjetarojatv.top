@@ -84,21 +84,51 @@ const defaultSrc = defaultServer?.url ?? '';
 
   let activeChannelIndex = 0;
   let activeServerId = channelData[0]?.servers[0]?.id ?? 1;
+  const requestedServerId = Number(new URLSearchParams(window.location.search).get('s') || '0');
+
+  if (Number.isFinite(requestedServerId) && requestedServerId > 0) {
+    activeServerId = requestedServerId;
+  }
+
+  const syncServerButtons = () => {
+    serverButtons.forEach((entry) => {
+      const entryServerId = Number(entry.getAttribute('data-server-id') || '0');
+      entry.classList.toggle('is-active', entryServerId === activeServerId);
+    });
+  };
+
+  const syncChannelButtons = () => {
+    channelButtons.forEach((entry, index) => {
+      entry.classList.toggle('is-active', index === activeChannelIndex);
+    });
+  };
+
+  const syncUrl = () => {
+    const nextUrl = new URL(window.location.href);
+    nextUrl.searchParams.set('s', String(activeServerId));
+    window.history.replaceState({}, '', nextUrl);
+  };
 
   const updatePlayer = () => {
     if (!iframe) return;
     const channel = channelData[activeChannelIndex];
     const server = channel?.servers.find((entry) => entry.id === activeServerId) ?? channel?.servers[0];
     if (server) {
+      activeServerId = server.id;
       iframe.src = server.url;
     }
+    syncChannelButtons();
+    syncServerButtons();
+    syncUrl();
   };
 
   channelButtons.forEach((button, index) => {
     button.addEventListener('click', () => {
       activeChannelIndex = index;
-      channelButtons.forEach((entry) => entry.classList.remove('is-active'));
-      button.classList.add('is-active');
+      const activeChannel = channelData[activeChannelIndex];
+      if (!activeChannel?.servers.some((entry) => entry.id === activeServerId)) {
+        activeServerId = activeChannel?.servers[0]?.id ?? 1;
+      }
       updatePlayer();
     });
   });
@@ -106,9 +136,9 @@ const defaultSrc = defaultServer?.url ?? '';
   serverButtons.forEach((button) => {
     button.addEventListener('click', () => {
       activeServerId = Number(button.getAttribute('data-server-id') || '1');
-      serverButtons.forEach((entry) => entry.classList.remove('is-active'));
-      button.classList.add('is-active');
       updatePlayer();
     });
   });
+
+  updatePlayer();
 </script>

@@ -1,0 +1,447 @@
+---
+import Base from '../layouts/Base.astro';
+import { SOURCE_TIMEZONE } from '../lib/config';
+import { getSiteData } from '../lib/data';
+import { buildCanonical, buildPageTitle } from '../lib/seo';
+import { buildShareEntry, buildShareText } from '../lib/share';
+import { formatSpanishDate, toIsoDate } from '../lib/timezones';
+
+const siteData = getSiteData();
+const shareEntries = siteData.matches.map(buildShareEntry);
+const uniqueDates = [...new Set(shareEntries.map((entry) => entry.date))].sort((left, right) =>
+  toIsoDate(left).localeCompare(toIsoDate(right))
+);
+
+function getCurrentSourceDateKey() {
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: SOURCE_TIMEZONE,
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  }).format(new Date()).split('/');
+
+  return `${parts[0]}-${parts[1]}-${parts[2]}`;
+}
+
+const currentSourceDateKey = getCurrentSourceDateKey();
+const todayDateKey = uniqueDates.includes(currentSourceDateKey) ? currentSourceDateKey : uniqueDates[0] || '';
+const tomorrowDateKey =
+  uniqueDates[uniqueDates.indexOf(todayDateKey) + 1] || (uniqueDates[0] === todayDateKey ? uniqueDates[1] || '' : '');
+
+const dateOptions = uniqueDates.map((date) => ({
+  key: date,
+  label: formatSpanishDate(date),
+}));
+
+const groupedByDate = dateOptions.map((option) => {
+  const entryMap = new Map<
+    string,
+    {
+      key: string;
+      header: string;
+      matches: typeof shareEntries;
+    }
+  >();
+
+  for (const entry of shareEntries.filter((item) => item.date === option.key)) {
+    if (!entryMap.has(entry.leagueKey)) {
+      entryMap.set(entry.leagueKey, {
+        key: entry.leagueKey,
+        header: entry.leagueHeader,
+        matches: [],
+      });
+    }
+
+    entryMap.get(entry.leagueKey)!.matches.push(entry);
+  }
+
+  return {
+    key: option.key,
+    label: option.label,
+    leagues: [...entryMap.values()],
+  };
+});
+
+const initialDateKey = todayDateKey || 'all';
+const initialVisibleEntries = shareEntries.filter((entry) =>
+  initialDateKey === 'all' ? true : entry.date === initialDateKey
+);
+const initialPreview = buildShareText(initialVisibleEntries, {
+  serverCount: 2,
+  includeDateHeadings: groupedByDate.length > 1,
+});
+
+const title = buildPageTitle('Generador de Share para Telegram');
+const description =
+  'Herramienta interna para seleccionar partidos, agruparlos por liga y copiar texto listo para Telegram.';
+const canonicalUrl = buildCanonical('/share');
+---
+
+<Base title={title} description={description} canonicalUrl={canonicalUrl} robots="noindex,nofollow">
+  <section class="hero hero--subpage">
+    <div class="hero__inner">
+      <p class="hero__eyebrow">Telegram Share Tool</p>
+      <h1>Generador de posts para Telegram</h1>
+      <p class="hero__lead">
+        Marca por fecha, liga y partido. Copia seleccionados o genera bloques completos de hoy y
+        manana en formato listo para pegar.
+      </p>
+      <p class="hero__stats">
+        {siteData.matchCount} partidos · {uniqueDates.length} fechas · agrupado por liga
+      </p>
+    </div>
+  </section>
+
+  <section class="content-section share-tool">
+    <aside class="share-tool__sidebar">
+      <div class="share-panel">
+        <div class="section-heading">
+          <p class="section-heading__eyebrow">Control</p>
+          <h2>Filtros y copia</h2>
+        </div>
+
+        <div class="share-filter-list">
+          <button type="button" class="pill pill--button" data-date-filter="all">
+            Todo
+          </button>
+          {todayDateKey && (
+            <button type="button" class="pill pill--button" data-date-filter={todayDateKey}>
+              Hoy
+            </button>
+          )}
+          {tomorrowDateKey && (
+            <button type="button" class="pill pill--button" data-date-filter={tomorrowDateKey}>
+              Manana
+            </button>
+          )}
+          {dateOptions.map((option) => (
+            <button type="button" class="pill pill--button" data-date-filter={option.key}>
+              {option.key}
+            </button>
+          ))}
+        </div>
+
+        <label class="share-setting">
+          <span>Links por partido</span>
+          <select id="share-server-count" class="share-select">
+            <option value="2" selected>2 links</option>
+            <option value="4">4 links</option>
+          </select>
+        </label>
+
+        <div class="share-button-grid">
+          <button type="button" class="share-action" id="select-visible">
+            Seleccionar visibles
+          </button>
+          <button type="button" class="share-action share-action--ghost" id="clear-visible">
+            Limpiar visibles
+          </button>
+          <button type="button" class="share-action" id="copy-selected">
+            Copiar seleccionados
+          </button>
+          <button type="button" class="share-action" id="copy-visible">
+            Copiar todo visible
+          </button>
+          <button type="button" class="share-action" id="copy-today" disabled={!todayDateKey}>
+            Copiar hoy
+          </button>
+          <button type="button" class="share-action" id="copy-tomorrow" disabled={!tomorrowDateKey}>
+            Copiar manana
+          </button>
+        </div>
+
+        <div class="share-preview">
+          <div class="share-preview__header">
+            <strong>Vista previa</strong>
+            <span id="share-preview-count"></span>
+          </div>
+          <textarea id="share-output" rows="18" readonly>{initialPreview}</textarea>
+          <p id="share-status" class="share-status">Listo para copiar.</p>
+        </div>
+      </div>
+    </aside>
+
+    <div class="share-tool__content">
+      {groupedByDate.length === 0 ? (
+        <section class="empty-state">
+          <h2>Sin partidos para compartir</h2>
+          <p>Cuando la fuente tenga encuentros disponibles, este panel generara los bloques de Telegram.</p>
+        </section>
+      ) : (
+        groupedByDate.map((dateGroup) => (
+          <section class="share-date-section" data-date-section={dateGroup.key}>
+            <div class="share-date-section__header">
+              <p class="section-heading__eyebrow">Fecha</p>
+              <h2>{dateGroup.label}</h2>
+            </div>
+
+            <div class="share-league-stack">
+              {dateGroup.leagues.map((league) => (
+                <article class="share-league-card" data-league-section data-date={dateGroup.key} data-league={league.key}>
+                  <label class="share-league-toggle">
+                    <input
+                      type="checkbox"
+                      checked
+                      data-share-league={league.key}
+                      data-date={dateGroup.key}
+                    />
+                    <span class="share-league-toggle__copy">
+                      <strong>{league.header}</strong>
+                      <small>{league.matches.length} partidos</small>
+                    </span>
+                  </label>
+
+                  <div class="share-match-list">
+                    {league.matches.map((entry) => (
+                      <label
+                        class="share-match-row"
+                        data-match-row
+                        data-date={dateGroup.key}
+                        data-league={league.key}
+                      >
+                        <input
+                          type="checkbox"
+                          checked
+                          data-share-match={entry.id}
+                          data-date={dateGroup.key}
+                          data-league={league.key}
+                        />
+                        <div class="share-match-row__copy">
+                          <strong>
+                            {entry.homeTeam} vs {entry.awayTeam}
+                          </strong>
+                          <span>
+                            {entry.leagueBadge} · {entry.timeLabel}
+                          </span>
+                        </div>
+                        <a href={`/partido/${entry.slug}/?s=1`} target="_blank" rel="noreferrer">
+                          Abrir
+                        </a>
+                      </label>
+                    ))}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        ))
+      )}
+    </div>
+  </section>
+
+  <script
+    is:inline
+    define:vars={{
+      shareEntriesJson: JSON.stringify(shareEntries),
+      initialDateKey,
+      todayDateKey,
+      tomorrowDateKey,
+    }}
+  >
+    const entries = JSON.parse(shareEntriesJson);
+    const matchCheckboxes = Array.from(document.querySelectorAll('[data-share-match]'));
+    const leagueCheckboxes = Array.from(document.querySelectorAll('[data-share-league]'));
+    const dateFilterButtons = Array.from(document.querySelectorAll('[data-date-filter]'));
+    const dateSections = Array.from(document.querySelectorAll('[data-date-section]'));
+    const output = document.getElementById('share-output');
+    const outputCount = document.getElementById('share-preview-count');
+    const status = document.getElementById('share-status');
+    const serverCountSelect = document.getElementById('share-server-count');
+    const copySelectedButton = document.getElementById('copy-selected');
+    const copyVisibleButton = document.getElementById('copy-visible');
+    const copyTodayButton = document.getElementById('copy-today');
+    const copyTomorrowButton = document.getElementById('copy-tomorrow');
+    const selectVisibleButton = document.getElementById('select-visible');
+    const clearVisibleButton = document.getElementById('clear-visible');
+
+    let activeDate = initialDateKey || 'all';
+
+    const isVisibleDate = (dateKey) => activeDate === 'all' || activeDate === dateKey;
+
+    const getVisibleEntries = () => entries.filter((entry) => isVisibleDate(entry.date));
+
+    const getVisibleSelectedEntries = () =>
+      getVisibleEntries().filter((entry) => {
+        const checkbox = document.querySelector(`[data-share-match="${entry.id}"]`);
+        return checkbox?.checked;
+      });
+
+    const getEntriesForDate = (dateKey) => entries.filter((entry) => entry.date === dateKey);
+
+    const buildShareTextClient = (items) => {
+      if (!items.length) {
+        return '';
+      }
+
+      const serverCount = Number(serverCountSelect.value || '2');
+      const lines = [];
+      const grouped = new Map();
+
+      for (const entry of items) {
+        if (!grouped.has(entry.date)) {
+          grouped.set(entry.date, new Map());
+        }
+
+        const leagues = grouped.get(entry.date);
+        if (!leagues.has(entry.leagueKey)) {
+          leagues.set(entry.leagueKey, []);
+        }
+
+        leagues.get(entry.leagueKey).push(entry);
+      }
+
+      const multiDate = grouped.size > 1;
+
+      for (const [dateKey, leagues] of grouped.entries()) {
+        if (multiDate) {
+          lines.push(`📅 ${items.find((entry) => entry.date === dateKey)?.dateLabel || dateKey}`);
+          lines.push('');
+        }
+
+        for (const [, leagueEntries] of leagues.entries()) {
+          lines.push(leagueEntries[0].leagueHeader);
+          lines.push('');
+
+          for (const entry of leagueEntries) {
+            lines.push(`Ⓜ️ ${entry.homeTeam} 🆚 ${entry.awayTeam}`);
+            lines.push(`${entry.leagueBadge} | ${entry.timeLabel}`);
+            lines.push('📱 LIVE Link');
+            entry.links.slice(0, serverCount).forEach((link) => lines.push(`🔗 ${link}`));
+            lines.push('');
+          }
+        }
+      }
+
+      return lines.join('\n').trim();
+    };
+
+    const updateStatus = (message) => {
+      status.textContent = message;
+    };
+
+    const updatePreview = () => {
+      const selectedEntries = getVisibleSelectedEntries();
+      const previewEntries = selectedEntries.length > 0 ? selectedEntries : getVisibleEntries();
+      output.value = buildShareTextClient(previewEntries);
+      outputCount.textContent = `${previewEntries.length} partidos`;
+    };
+
+    const updateFilterButtons = () => {
+      dateFilterButtons.forEach((button) => {
+        button.classList.toggle('is-active', button.getAttribute('data-date-filter') === activeDate);
+      });
+    };
+
+    const updateDateVisibility = () => {
+      dateSections.forEach((section) => {
+        section.hidden = !isVisibleDate(section.getAttribute('data-date-section') || '');
+      });
+    };
+
+    const syncLeagueCheckboxes = () => {
+      leagueCheckboxes.forEach((checkbox) => {
+        const leagueKey = checkbox.getAttribute('data-share-league');
+        const dateKey = checkbox.getAttribute('data-date');
+        const childCheckboxes = matchCheckboxes.filter(
+          (entry) =>
+            entry.getAttribute('data-date') === dateKey &&
+            entry.getAttribute('data-league') === leagueKey
+        );
+        const checkedCount = childCheckboxes.filter((entry) => entry.checked).length;
+        checkbox.checked = checkedCount === childCheckboxes.length && childCheckboxes.length > 0;
+        checkbox.indeterminate = checkedCount > 0 && checkedCount < childCheckboxes.length;
+      });
+    };
+
+    const setVisibleSelection = (checked) => {
+      matchCheckboxes.forEach((checkbox) => {
+        if (isVisibleDate(checkbox.getAttribute('data-date') || '')) {
+          checkbox.checked = checked;
+        }
+      });
+      syncLeagueCheckboxes();
+      updatePreview();
+    };
+
+    const copyText = async (text, emptyMessage) => {
+      if (!text) {
+        updateStatus(emptyMessage);
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(text);
+        updateStatus('Copiado al portapapeles.');
+      } catch (error) {
+        output.focus();
+        output.select();
+        updateStatus('No se pudo copiar automaticamente. El texto quedo seleccionado para copiar manualmente.');
+      }
+    };
+
+    dateFilterButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        activeDate = button.getAttribute('data-date-filter') || 'all';
+        updateFilterButtons();
+        updateDateVisibility();
+        updatePreview();
+      });
+    });
+
+    leagueCheckboxes.forEach((checkbox) => {
+      checkbox.addEventListener('change', () => {
+        const leagueKey = checkbox.getAttribute('data-share-league');
+        const dateKey = checkbox.getAttribute('data-date');
+        matchCheckboxes.forEach((entry) => {
+          if (entry.getAttribute('data-date') === dateKey && entry.getAttribute('data-league') === leagueKey) {
+            entry.checked = checkbox.checked;
+          }
+        });
+        syncLeagueCheckboxes();
+        updatePreview();
+      });
+    });
+
+    matchCheckboxes.forEach((checkbox) => {
+      checkbox.addEventListener('change', () => {
+        syncLeagueCheckboxes();
+        updatePreview();
+      });
+    });
+
+    serverCountSelect?.addEventListener('change', () => {
+      updatePreview();
+    });
+
+    selectVisibleButton?.addEventListener('click', () => {
+      setVisibleSelection(true);
+      updateStatus('Partidos visibles seleccionados.');
+    });
+
+    clearVisibleButton?.addEventListener('click', () => {
+      setVisibleSelection(false);
+      updateStatus('Partidos visibles desmarcados.');
+    });
+
+    copySelectedButton?.addEventListener('click', () => {
+      copyText(buildShareTextClient(getVisibleSelectedEntries()), 'No hay partidos visibles seleccionados.');
+    });
+
+    copyVisibleButton?.addEventListener('click', () => {
+      copyText(buildShareTextClient(getVisibleEntries()), 'No hay partidos visibles para copiar.');
+    });
+
+    copyTodayButton?.addEventListener('click', () => {
+      copyText(buildShareTextClient(getEntriesForDate(todayDateKey)), 'No hay partidos para hoy.');
+    });
+
+    copyTomorrowButton?.addEventListener('click', () => {
+      copyText(buildShareTextClient(getEntriesForDate(tomorrowDateKey)), 'No hay partidos para manana.');
+    });
+
+    updateFilterButtons();
+    updateDateVisibility();
+    syncLeagueCheckboxes();
+    updatePreview();
+  </script>
+</Base>

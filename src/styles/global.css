@@ -364,6 +364,210 @@ a {
   line-height: 1.75;
 }
 
+.share-tool {
+  display: grid;
+  grid-template-columns: minmax(18rem, 22rem) minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.share-tool__sidebar {
+  position: sticky;
+  top: 5.5rem;
+}
+
+.share-tool__content,
+.share-league-stack,
+.share-match-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.share-panel,
+.share-date-section,
+.share-league-card {
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius) - 4px);
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: var(--shadow);
+}
+
+.share-panel,
+.share-date-section,
+.share-league-card,
+.share-match-row {
+  padding: 1rem;
+}
+
+.share-filter-list,
+.share-button-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.share-filter-list {
+  margin-bottom: 1rem;
+}
+
+.share-setting {
+  display: grid;
+  gap: 0.45rem;
+  margin-bottom: 1rem;
+  color: var(--muted);
+}
+
+.share-setting span {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.share-select,
+.share-preview textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.26);
+  color: var(--text);
+}
+
+.share-select {
+  padding: 0.8rem 0.9rem;
+  font: inherit;
+}
+
+.share-button-grid {
+  margin-bottom: 1rem;
+}
+
+.share-action {
+  padding: 0.75rem 1rem;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+  color: white;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 160ms ease, opacity 160ms ease;
+}
+
+.share-action:hover:not(:disabled),
+.share-action:focus-visible:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.share-action:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.share-action--ghost {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--line);
+  color: var(--text);
+}
+
+.share-preview {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.share-preview__header,
+.share-date-section__header,
+.share-league-toggle,
+.share-match-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.share-preview__header span,
+.share-date-section__header p,
+.share-status,
+.share-league-toggle small,
+.share-match-row span {
+  color: var(--muted);
+}
+
+.share-preview textarea {
+  min-height: 24rem;
+  padding: 1rem;
+  resize: vertical;
+  font: 500 0.92rem/1.6 "Consolas", "SFMono-Regular", "Courier New", monospace;
+}
+
+.share-status {
+  margin: 0;
+  font-size: 0.92rem;
+}
+
+.share-date-section {
+  display: grid;
+  gap: 1rem;
+}
+
+.share-date-section__header {
+  align-items: end;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.share-date-section__header h2 {
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
+  max-width: none;
+}
+
+.share-league-card {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.share-league-toggle,
+.share-match-row {
+  text-decoration: none;
+}
+
+.share-league-toggle input,
+.share-match-row input {
+  width: 1.1rem;
+  height: 1.1rem;
+  margin: 0;
+  accent-color: var(--accent);
+  flex: 0 0 auto;
+}
+
+.share-league-toggle__copy,
+.share-match-row__copy {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.share-match-list {
+  gap: 0.75rem;
+}
+
+.share-match-row {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.share-match-row strong,
+.share-league-toggle strong {
+  color: var(--text);
+}
+
+.share-match-row a {
+  color: var(--accent-warm);
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
 .faq-list {
   display: grid;
   gap: 0.8rem;
@@ -452,6 +656,14 @@ a {
   .site-footer__inner {
     grid-template-columns: 1fr;
   }
+
+  .share-tool {
+    grid-template-columns: 1fr;
+  }
+
+  .share-tool__sidebar {
+    position: static;
+  }
 }
 
 @media (max-width: 720px) {
@@ -470,5 +682,17 @@ a {
 
   .content-section {
     padding-top: 1.6rem;
+  }
+
+  .share-preview__header,
+  .share-date-section__header,
+  .share-league-toggle,
+  .share-match-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .share-match-row a {
+    align-self: flex-start;
   }
 }
