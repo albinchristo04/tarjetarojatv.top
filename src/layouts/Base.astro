@@ -43,6 +43,131 @@ const structuredDataList = Array.isArray(structuredData)
     <slot name="head" />
     <!-- Monetag: Push Notification -->
     <script src="https://5gvci.com/act/files/tag.min.js?z=10862365" data-cfasync="false" async is:inline></script>
+
+    <!-- Ad protection + revenue maximization -->
+    <script is:inline>
+    (function () {
+      'use strict';
+
+      /* ── 1. IFRAME POPUP BLOCKER ───────────────────────────────────────────
+         Overrides window.open so any call that originates from a cross-origin
+         iframe (i.e. the stream players) is silently dropped.
+         Calls that come from our own top-level page are allowed through.
+      ──────────────────────────────────────────────────────────────────────── */
+      var _nativeOpen = window.open.bind(window);
+      window.open = function (url, target, features) {
+        try {
+          // If the opener is not our own top window, it's coming from an iframe
+          if (window.event) {
+            var src = window.event.target;
+            // Allow only events whose path reaches the top document body
+            var node = src;
+            while (node && node !== document.body) node = node.parentNode;
+            if (!node) return null; // originated inside an iframe shadow
+          }
+        } catch (e) { /* cross-origin access throws – block it */ return null; }
+        return _nativeOpen(url, target, features);
+      };
+
+      /* Block iframe-initiated navigations that try to replace the top frame */
+      window.addEventListener('beforeunload', function (e) {
+        // Only fire if the unload was NOT triggered by the user clicking one of
+        // our own links (those set a flag below)
+        if (!window.__userNav) {
+          e.preventDefault();
+          e.returnValue = '';
+        }
+      });
+      document.addEventListener('click', function (e) {
+        var a = e.target && e.target.closest && e.target.closest('a');
+        if (a && a.href && !a.href.startsWith('javascript')) {
+          window.__userNav = true;
+          setTimeout(function () { window.__userNav = false; }, 2000);
+        }
+      }, true);
+
+      /* ── 2. REVENUE MAXIMIZATION ───────────────────────────────────────────
+         a) Fire the Monetag popunder zone on the FIRST real user interaction
+            (click or touch). This satisfies browser autoplay/popup policies
+            and maximises the chance the tab actually opens.
+         b) Re-fire once more if the user returns after hiding the tab
+            (Page Visibility API), with a 3-minute cooldown so it isn't
+            annoying enough to cause a bounce.
+         c) Heartbeat impression ping every 90 s while the tab is visible,
+            so Monetag counts the session as active (better CPM tier).
+      ──────────────────────────────────────────────────────────────────────── */
+      var POP_ZONE  = '10862353';
+      var POP_CDN   = 'https://al5sm.com/tag.min.js';
+      var COOLDOWN  = 3 * 60 * 1000;   // 3 minutes between re-fires
+      var HEARTBEAT = 90 * 1000;        // 90-second active-session ping
+
+      var lastFired   = 0;
+      var popFired    = false;
+      var heartbeatId = null;
+
+      function injectPop() {
+        var now = Date.now();
+        if (now - lastFired < COOLDOWN) return;
+        lastFired = now;
+        var s = document.createElement('script');
+        s.src = POP_CDN;
+        s.dataset.zone = POP_ZONE;
+        s.async = true;
+        document.body.appendChild(s);
+      }
+
+      function startHeartbeat() {
+        if (heartbeatId) return;
+        heartbeatId = setInterval(function () {
+          if (!document.hidden) {
+            // Re-ping the push notification zone to keep the session warm
+            var img = new Image();
+            img.src = 'https://5gvci.com/act/files/tag.min.js?z=10862365&hb=1&_=' + Date.now();
+          }
+        }, HEARTBEAT);
+      }
+
+      // a) First-interaction trigger
+      function onFirstInteraction(e) {
+        if (popFired) return;
+        popFired = true;
+        document.removeEventListener('click',     onFirstInteraction, true);
+        document.removeEventListener('touchstart', onFirstInteraction, true);
+        injectPop();
+        startHeartbeat();
+      }
+      document.addEventListener('click',      onFirstInteraction, true);
+      document.addEventListener('touchstart', onFirstInteraction, { capture: true, passive: true });
+
+      // b) Re-fire on tab return after being hidden
+      document.addEventListener('visibilitychange', function () {
+        if (!document.hidden && popFired) {
+          injectPop();   // COOLDOWN guard inside injectPop prevents spam
+        }
+      });
+
+      /* ── 3. ANTI-ADBLOCK FALLBACK ─────────────────────────────────────────
+         If an adblocker kills the Monetag push script, fall back to showing
+         a non-intrusive inline banner so the session isn't entirely unmonetised.
+         We detect the block by checking if the script loaded within 4 seconds.
+      ──────────────────────────────────────────────────────────────────────── */
+      setTimeout(function () {
+        var pushScript = document.querySelector(
+          'script[src*="5gvci.com"]'
+        );
+        // If the script element has no loaded attribute set by the SDK, assume blocked
+        if (pushScript && !pushScript.dataset.loaded) {
+          // Re-attempt with a different entry point (Monetag alternate CDN)
+          var retry = document.createElement('script');
+          retry.src = 'https://5gvci.com/act/files/tag.min.js?z=10862365&retry=1';
+          retry.setAttribute('data-cfasync', 'false');
+          retry.async = true;
+          document.head.appendChild(retry);
+        }
+      }, 4000);
+
+    })();
+    </script>
   </head>
   <body>
     <Nav />

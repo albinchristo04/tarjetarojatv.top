@@ -23,6 +23,7 @@ const defaultSrc = defaultServer?.url ?? '';
         allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
         allowfullscreen
         referrerpolicy="strict-origin-when-cross-origin"
+        sandbox="allow-scripts allow-same-origin allow-forms allow-presentation allow-popups-to-escape-sandbox"
       ></iframe>
     ) : (
       <div class="player-shell__empty">
