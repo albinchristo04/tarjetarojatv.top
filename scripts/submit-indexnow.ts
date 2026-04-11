@@ -85,7 +85,14 @@ async function main() {
   });
 
   if (!response.ok) {
-    throw new Error(`IndexNow submission failed with status ${response.status}`);
+    const body = await response.text().catch(() => '(no body)');
+    throw new Error(
+      `IndexNow submission failed with status ${response.status}\n` +
+      `  keyLocation: ${buildIndexNowUrl()}\n` +
+      `  host: ${new URL(SITE_URL).host}\n` +
+      `  urlCount: ${changedUrls.length}\n` +
+      `  response: ${body}`
+    );
   }
 
   console.log(`Submitted ${changedUrls.length} changed URLs to IndexNow.`);
